@@ -13,22 +13,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'test title',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.lightGreen),
+       // color theme: uses a base color (seed) and calculates text and highlight colors. pretty cool.
+        colorScheme: .fromSeed(
+          seedColor: const Color.fromARGB(255, 27, 175, 249), // base color
+          primary: const Color.fromARGB(255, 80, 187, 240), // primary accent color
+          surface: const Color.fromARGB(255, 213, 208, 195), // background color
+          outline: const Color.fromARGB(255, 0, 0, 0), // outlines
+          onSurface: const Color.fromARGB(255, 0, 0, 0),
+          brightness: Brightness.light) // dark mode
       ),
       home: const MyHomePage(title: 'MTG-track build alpha'),
     );
@@ -68,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor: const Color.fromARGB(255, 1, 197, 251),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
