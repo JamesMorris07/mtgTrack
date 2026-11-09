@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: .center,
           children: [
-            const Text('hello world'),
+            const Text('hello WHORE'),
           ],
         ),
       ),
