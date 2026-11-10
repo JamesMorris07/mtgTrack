@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ui/ui.dart';
+
 class Game{
     int numPlayers;
     int startingLife;
