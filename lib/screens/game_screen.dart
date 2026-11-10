@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../game.dart';
+import '../game.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
   final Game game;
 
   const GameScreen({
@@ -9,6 +9,11 @@ class GameScreen extends StatelessWidget {
     required this.game,
   });
 
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,8 +24,8 @@ class GameScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Players: ${game.numPlayers}'),
-            Text('Starting Life: ${game.startingLife}'),
+            Text('Players: ${widget.game.numPlayers}'),
+            Text('Starting Life: ${widget.game.startingLife}'),
           ],
         ),
       ),

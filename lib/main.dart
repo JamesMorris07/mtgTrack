@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ui/ui.dart';
-import '../game.dart';
-import 'screens/game_screen.dart';
+import 'screens/game_setup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -79,16 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: .center,
           children: [
             const Text('hello world, it works!'),
-            ElevatedButton(onPressed: (){
-              Game game = Game();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => GameScreen(game: game)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GameSetup(),
                   ),
-              );
-            }, 
-            child: Text('start game'))
+                );
+              },
+              child: const Text('start game'),
+            )
           ],
         ),
       ),
