@@ -57,7 +57,7 @@ class _GameScreenState extends State<GameScreen> {
             ),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
                 IconButton(
@@ -68,7 +68,7 @@ class _GameScreenState extends State<GameScreen> {
                 ),
 
                 Text(
-                  '${playerLifeTotals[index]}',
+                  ' ${playerLifeTotals[index]} ',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 64,
