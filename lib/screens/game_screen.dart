@@ -270,6 +270,26 @@ class _GameScreenState extends State<GameScreen> {
                 ),
               ),
             ],
+            if (widget.game.numPlayers == 6) ...[
+              Expanded(
+                child: Row(
+                  children: [
+                    playerSection(0),
+                    playerSection(1),
+                    playerSection(2),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    playerSection(3),
+                    playerSection(4),
+                    playerSection(5)
+                  ],
+                ),
+              ),
+            ]
 
           ],
         ),
