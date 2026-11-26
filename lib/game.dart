@@ -6,7 +6,7 @@ class Game{
     int startingLife;
 
     Game({
-        this.numPlayers = 4,
+        this.numPlayers = 4, // default 4 players
         this.startingLife = 40,
     });
 }
