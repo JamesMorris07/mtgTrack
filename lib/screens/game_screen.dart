@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../game.dart';
 import '../models/damage_event.dart';
 import '../models/debug.dart';
+import '../widgets/damage_panel.dart';
 class GameScreen extends StatefulWidget {
   final Game game;
 
@@ -33,7 +34,7 @@ class _GameScreenState extends State<GameScreen> {
     Colors.red,
     Colors.orange,
   ];
-
+  
   @override
   void initState() {
     super.initState();
@@ -52,7 +53,7 @@ class _GameScreenState extends State<GameScreen> {
       pendingDamage = 0;
     });
   }
-  changeDamage(int amount) {
+   void changeDamage(int amount) {
     setState((){
       pendingDamage = (pendingDamage + amount).clamp(0,999).toInt();
     });
@@ -77,15 +78,78 @@ class _GameScreenState extends State<GameScreen> {
     pendingDamage = 0;
     });
   }
-  
+  void cancelDamage(){
+    setState((){
+      pendingAttacker = null;
+      pendingRecipient = null;
+      pendingDamage = 0;
+    });
+  }
   void changeLife(int player, int amount) {
     setState(() {
       playerLifeTotals[player] += amount;
     });
   }
-  
+  Widget damageSection(int index) {
+  return Expanded(
+    child: Container(
+      color: playerColors[index % playerColors.length],
+      child: DamagePanel(
+        damage: pendingDamage,
+        onIncrease: () => changeDamage(1),
+        onDecrease: () => changeDamage(-1),
+        onConfirm: confirmDamage,
+        onCancel: cancelDamage,
+      ),
+    ),
+  );
+}
   Widget playerSection(int index) {
-    return Expanded(
+  if (pendingRecipient == index) {
+    return damageSection(index);
+  }
+
+  return Expanded(
+    child: DragTarget<int>(
+      onWillAcceptWithDetails: (details) {
+        return details.data != index;
+      },
+
+      onAcceptWithDetails: (details) {
+        beginDamage(details.data, index);
+      },
+
+      builder: (context, candidateData, rejectedData) {
+        return Draggable<int>(
+    data: index,
+
+    feedback: Material(
+      color: Colors.transparent,
+      child: Container(
+        width: 150,
+        height: 150,
+        color: playerColors[index % playerColors.length],
+        child: Center(
+          child: Text(
+            'Player ${index + 1}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ),
+    ),
+
+    childWhenDragging: Container(
+      color: playerColors[index % playerColors.length].withValues(alpha: 0.4),
+      child: const Center(
+        child: Text('Attacking...'),
+      ),
+    ),
+
+
+
       child: Container(
         color: playerColors[index % playerColors.length],
         child: Column(
@@ -131,9 +195,12 @@ class _GameScreenState extends State<GameScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
+             ),
+      );
+    },
+  ),
+);
+}
 
   @override
   Widget build(BuildContext context) {
