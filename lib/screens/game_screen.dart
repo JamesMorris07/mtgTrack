@@ -165,65 +165,25 @@ class _GameScreenState extends State<GameScreen> {
                   Text(
                     'Player ${index + 1}',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 18,
                     ),
                   ),
 
-
-            if (widget.game.numPlayers == 5) ...[
-              Expanded(
-                child: Row(
-                  children: [
-                    playerSection(0),
-                    playerSection(1),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    playerSection(2),
-                    playerSection(3),
-                    playerSection(4)
-                  ],
-                ),
-              ),
-            ],
-            if (widget.game.numPlayers == 6) ...[
-              Expanded(
-                child: Row(
-                  children: [
-                    playerSection(0),
-                    playerSection(1),
-                    playerSection(2),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    playerSection(3),
-                    playerSection(4),
-                    playerSection(5)
-                  ],
-                ),
-              ),
-            ],
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: () => changeLife(index, -1),
                         icon: const Icon(Icons.remove),
-                        color: Colors.white,
+                        color: Colors.black,
                         iconSize: 32,
                       ),
 
                       Text(
                         '${playerLifeTotals[index]}',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
                         ),
@@ -232,7 +192,7 @@ class _GameScreenState extends State<GameScreen> {
                       IconButton(
                         onPressed: () => changeLife(index, 1),
                         icon: const Icon(Icons.add),
-                        color: Colors.white,
+                        color: Colors.black,
                         iconSize: 32,
                       ),
                     ],
@@ -319,6 +279,27 @@ class _GameScreenState extends State<GameScreen> {
                           playerSection(2),
                           playerSection(3),
                           playerSection(4),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  if (widget.game.numPlayers == 6) ...[
+                    Expanded(
+                      child: Row(
+                        children: [
+                          playerSection(0),
+                          playerSection(1),
+                          playerSection(2),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          playerSection(3),
+                          playerSection(4),
+                          playerSection(5),
                         ],
                       ),
                     ),
