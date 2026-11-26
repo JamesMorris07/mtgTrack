@@ -35,6 +35,7 @@ class _GameScreenState extends State<GameScreen> {
     Colors.red,
     Colors.orange,
     Colors.purple,
+    Colors.yellow,
   ];
 
   @override
