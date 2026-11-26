@@ -101,7 +101,7 @@ class _GameScreenState extends State<GameScreen> {
             ),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
                 IconButton(
@@ -115,7 +115,7 @@ class _GameScreenState extends State<GameScreen> {
                   '${playerLifeTotals[index]}',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 64,
+                    fontSize: 48,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -177,6 +177,26 @@ class _GameScreenState extends State<GameScreen> {
                   children: [
                     playerSection(2),
                     playerSection(3),
+                  ],
+                ),
+              ),
+            ],
+
+            if (widget.game.numPlayers == 5) ...[
+              Expanded(
+                child: Row(
+                  children: [
+                    playerSection(0),
+                    playerSection(1),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    playerSection(2),
+                    playerSection(3),
+                    playerSection(4)
                   ],
                 ),
               ),
