@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../game.dart';
-
+import '../models/damage_event.dart';
+import '../models/debug.dart';
 class GameScreen extends StatefulWidget {
   final Game game;
 
@@ -15,7 +16,16 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
 
+
+  //current life totals stored as a list (player 1 = 0)
   late List<int> playerLifeTotals;
+
+  //history of  damage events throughout the game
+  final List<DamageEvent> damageHistory = [];
+  //tracks ongoing damage interaction
+  int? pendingAttacker;
+  int? pendingRecipient;
+  int pendingDamage = 0;
 
   final List<Color> playerColors = [
     Colors.blue,
@@ -27,19 +37,53 @@ class _GameScreenState extends State<GameScreen> {
   @override
   void initState() {
     super.initState();
-
+    
     playerLifeTotals = List.filled(
       widget.game.numPlayers,
       widget.game.startingLife,
+      
     );
+    testDebug(playerLifeTotals);
   }
-
+  void beginDamage(int attacker, int recipient){
+    setState(() {
+      pendingAttacker = attacker;
+      pendingRecipient = recipient;
+      pendingDamage = 0;
+    });
+  }
+  changeDamage(int amount) {
+    setState((){
+      pendingDamage = (pendingDamage + amount).clamp(0,999).toInt();
+    });
+  }
+  void confirmDamage() {
+    if (pendingAttacker == null || pendingRecipient == null || pendingDamage <=0){
+      return; //no damage dealt nothing to log
+    }
+    setState((){
+      //subtract the damage
+      playerLifeTotals[pendingRecipient!] -= pendingDamage;
+      //record the event
+      damageHistory.add(DamageEvent(
+      attacker: pendingAttacker!,
+      recipient: pendingRecipient!,
+      amount: pendingDamage,
+      ),
+    );
+    //reset for next event
+    pendingAttacker = null;
+    pendingRecipient = null;
+    pendingDamage = 0;
+    });
+  }
+  
   void changeLife(int player, int amount) {
     setState(() {
       playerLifeTotals[player] += amount;
     });
   }
-
+  
   Widget playerSection(int index) {
     return Expanded(
       child: Container(
