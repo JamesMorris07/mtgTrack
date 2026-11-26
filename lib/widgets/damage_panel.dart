@@ -45,7 +45,7 @@ class DamagePanel extends StatelessWidget {
           ],
         ),
 
-        Row(
+        Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
