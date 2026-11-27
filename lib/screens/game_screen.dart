@@ -4,7 +4,7 @@ import '../game.dart';
 import '../models/damage_event.dart';
 import '../models/debug.dart';
 import '../widgets/damage_panel.dart';
-
+import '../widgets/player_section.dart';
 class GameScreen extends StatefulWidget {
   final Game game;
 
@@ -112,100 +112,21 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   // Builds an individual player section
-  Widget playerSection(int index) {
-    return Expanded(
-      child: DragTarget<int>(
-        onWillAcceptWithDetails: (details) {
-          return details.data != index;
-        },
+ Widget playerSection(int index) {
+  return PlayerSection(
+    playerIndex: index,
+    lifeTotal: playerLifeTotals[index],
+    playerColor: playerColors[index % playerColors.length],
 
-        onAcceptWithDetails: (details) {
-          beginDamage(details.data, index);
-        },
+    onLifeChange: (amount) {
+      changeLife(index, amount);
+    },
 
-        builder: (context, candidateData, rejectedData) {
-          return Draggable<int>(
-            data: index,
-            maxSimultaneousDrags: 1,
-
-            feedback: Material(
-              color: Colors.transparent,
-              child: Container(
-                width: 150,
-                height: 150,
-                color: playerColors[index % playerColors.length],
-                child: Center(
-                  child: Text(
-                    'Player ${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            childWhenDragging: Container(
-              color: playerColors[index % playerColors.length]
-                  .withValues(alpha: 0.4),
-              child: const Center(
-                child: Text(
-                  'Attacking...',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-
-            child: Container(
-              color: playerColors[index % playerColors.length],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    'Player ${index + 1}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () => changeLife(index, -1),
-                        icon: const Icon(Icons.remove),
-                        color: Colors.black,
-                        iconSize: 32,
-                      ),
-
-                      Text(
-                        '${playerLifeTotals[index]}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      IconButton(
-                        onPressed: () => changeLife(index, 1),
-                        icon: const Icon(Icons.add),
-                        color: Colors.black,
-                        iconSize: 32,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
+    onDamage: (attacker) {
+      beginDamage(attacker, index);
+    },
+  );
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
