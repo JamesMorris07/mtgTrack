@@ -1,17 +1,15 @@
-
 import 'package:flutter/material.dart';
+
 import '../game.dart';
 import '../models/damage_event.dart';
 import '../models/debug.dart';
 import '../widgets/damage_panel.dart';
 import '../widgets/player_section.dart';
+
 class GameScreen extends StatefulWidget {
   final Game game;
 
-  const GameScreen({
-    super.key,
-    required this.game,
-  });
+  const GameScreen({super.key, required this.game});
 
   @override
   State<GameScreen> createState() => _GameScreenState();
@@ -28,6 +26,24 @@ class _GameScreenState extends State<GameScreen> {
   int? pendingAttacker;
   int? pendingRecipient;
   int pendingDamage = 0;
+  int getPlayerRotation(int index) {
+    switch (widget.game.numPlayers) {
+      case 2:
+        return index == 0 ? 2 : 0;
+
+      case 3:
+        if (index == 0) return 1;
+        if (index == 1) return 3;
+        return 0;
+
+      case 4:
+        return index == 0 || index == 1 ? 2 : 0;
+      case 5:
+        return index == 0 ? 2 : 0;
+      default:
+        return 0;
+    }
+  }
 
   final List<Color> playerColors = [
     Colors.blue,
@@ -62,8 +78,7 @@ class _GameScreenState extends State<GameScreen> {
   // Changes the pending damage amount
   void changeDamage(int amount) {
     setState(() {
-      pendingDamage =
-          (pendingDamage + amount).clamp(0, 999).toInt();
+      pendingDamage = (pendingDamage + amount).clamp(0, 999).toInt();
     });
   }
 
@@ -112,122 +127,100 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   // Builds an individual player section
- Widget playerSection(int index) {
-  return PlayerSection(
-    playerIndex: index,
-    lifeTotal: playerLifeTotals[index],
-    playerColor: playerColors[index % playerColors.length],
+  Widget playerSection(int index) {
+    return PlayerSection(
+      playerIndex: index,
+      lifeTotal: playerLifeTotals[index],
+      playerColor: playerColors[index % playerColors.length],
+      quarterTurns: getPlayerRotation(index),
 
-    onLifeChange: (amount) {
-      changeLife(index, amount);
-    },
+      onLifeChange: (amount) {
+        changeLife(index, amount);
+      },
 
-    onDamage: (attacker) {
-      beginDamage(attacker, index);
-    },
-  );
-}
+      onDamage: (attacker) {
+        beginDamage(attacker, index);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: pendingRecipient != null
-            ? Container(
-                color: playerColors[
-                    pendingRecipient! % playerColors.length],
-                width: double.infinity,
-                child: DamagePanel(
-                  damage: pendingDamage,
-                  onIncrease: () => changeDamage(1),
-                  onDecrease: () => changeDamage(-1),
-                  onConfirm: confirmDamage,
-                  onCancel: cancelDamage,
-                ),
-              )
-            : Column(
-                children: [
-                  if (widget.game.numPlayers == 1)
-                    playerSection(0),
-
-                  if (widget.game.numPlayers == 2) ...[
-                    playerSection(0),
-                    playerSection(1),
-                  ],
-
-                  if (widget.game.numPlayers == 3) ...[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(0),
-                          playerSection(1),
-                        ],
-                      ),
-                    ),
-                    playerSection(2),
-                  ],
-
-                  if (widget.game.numPlayers == 4) ...[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(0),
-                          playerSection(1),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(2),
-                          playerSection(3),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  if (widget.game.numPlayers == 5) ...[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(0),
-                          playerSection(1),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(2),
-                          playerSection(3),
-                          playerSection(4),
-                        ],
-                      ),
-                    ),
-                  ],
-
-                  if (widget.game.numPlayers == 6) ...[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(0),
-                          playerSection(1),
-                          playerSection(2),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          playerSection(3),
-                          playerSection(4),
-                          playerSection(5),
-                        ],
-                      ),
-                    ),
-                  ],
-                ],
+      body: pendingRecipient != null
+          ? Container(
+              color: playerColors[pendingRecipient! % playerColors.length],
+              width: double.infinity,
+              child: DamagePanel(
+                damage: pendingDamage,
+                onIncrease: () => changeDamage(1),
+                onDecrease: () => changeDamage(-1),
+                onConfirm: confirmDamage,
+                onCancel: cancelDamage,
               ),
-      ),
+            )
+          : Column(
+              children: [
+                if (widget.game.numPlayers == 1) playerSection(0),
+
+                if (widget.game.numPlayers == 2) ...[
+                  playerSection(0),
+                  playerSection(1),
+                ],
+
+                if (widget.game.numPlayers == 3) ...[
+                  Expanded(
+                    child: Row(children: [playerSection(0), playerSection(1)]),
+                  ),
+                  playerSection(2),
+                ],
+
+                if (widget.game.numPlayers == 4) ...[
+                  Expanded(
+                    child: Row(children: [playerSection(0), playerSection(1)]),
+                  ),
+                  Expanded(
+                    child: Row(children: [playerSection(2), playerSection(3)]),
+                  ),
+                ],
+
+                if (widget.game.numPlayers == 5) ...[
+                  Expanded(
+                    child: Row(children: [playerSection(0), playerSection(1)]),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        playerSection(2),
+                        playerSection(3),
+                        playerSection(4),
+                      ],
+                    ),
+                  ),
+                ],
+
+                if (widget.game.numPlayers == 6) ...[
+                  Expanded(
+                    child: Row(
+                      children: [
+                        playerSection(0),
+                        playerSection(1),
+                        playerSection(2),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        playerSection(3),
+                        playerSection(4),
+                        playerSection(5),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
     );
   }
 }

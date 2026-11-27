@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+
 import 'ui/ui.dart';
 import 'screens/game_setup.dart';
 
-void main() {
+import 'package:flutter/services.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  await SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
+  if (!systemOverlaysAreVisible) {
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.immersiveSticky,
+    );
+  }
+});
+
   runApp(const MyApp());
 }
 
@@ -39,7 +57,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -82,13 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const GameSetup(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const GameSetup()),
                 );
               },
               child: const Text('start game'),
-            )
+            ),
           ],
         ),
       ),

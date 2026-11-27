@@ -4,6 +4,7 @@ class PlayerSection extends StatelessWidget {
   final int playerIndex;
   final int lifeTotal;
   final Color playerColor;
+  final int quarterTurns;
 
   final Function(int) onLifeChange;
   final Function(int) onDamage;
@@ -15,98 +16,101 @@ class PlayerSection extends StatelessWidget {
     required this.playerColor,
     required this.onLifeChange,
     required this.onDamage,
+    required this.quarterTurns,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: DragTarget<int>(
-        onWillAcceptWithDetails: (details) {
-          return details.data != playerIndex;
-        },
+      child: RotatedBox(
+        quarterTurns: quarterTurns,
+        child: DragTarget<int>(
+          onWillAcceptWithDetails: (details) {
+            return details.data != playerIndex;
+          },
 
-        onAcceptWithDetails: (details) {
-          onDamage(details.data);
-        },
+          onAcceptWithDetails: (details) {
+            onDamage(details.data);
+          },
 
-        builder: (context, candidateData, rejectedData) {
-          return Draggable<int>(
-            data: playerIndex,
-            maxSimultaneousDrags: 1,
+          builder: (context, candidateData, rejectedData) {
+            return Draggable<int>(
+              data: playerIndex,
+              maxSimultaneousDrags: 1,
 
-            feedback: Material(
-              color: Colors.transparent,
-              child: Container(
-                width: 150,
-                height: 150,
-                color: playerColor,
-                child: Center(
+              feedback: Material(
+                color: Colors.transparent,
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  color: playerColor,
+                  child: Center(
+                    child: Text(
+                      'Player ${playerIndex + 1}',
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+
+              childWhenDragging: Container(
+                color: playerColor.withValues(alpha: 0.4),
+                child: const Center(
                   child: Text(
-                    'Player ${playerIndex + 1}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
+                    'Attacking...',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
-            ),
 
-            childWhenDragging: Container(
-              color: playerColor.withValues(alpha: 0.4),
-              child: const Center(
-                child: Text(
-                  'Attacking...',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-
-            child: Container(
-              color: playerColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    'Player ${playerIndex + 1}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                    ),
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              child: SizedBox.expand(
+                child: Container(
+                  color: playerColor,
+                  child: Row(     //render horizontally
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(
-                        onPressed: () => onLifeChange(-1),
-                        icon: const Icon(Icons.remove),
-                        color: Colors.black,
-                        iconSize: 32,
-                      ),
-
                       Text(
-                        '$lifeTotal',
+                        'Player ${playerIndex + 1}',
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
 
-                      IconButton(
-                        onPressed: () => onLifeChange(1),
-                        icon: const Icon(Icons.add),
-                        color: Colors.black,
-                        iconSize: 32,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () => onLifeChange(-1),
+                            icon: const Icon(Icons.remove),
+                            color: Colors.black,
+                            iconSize: 32,
+                          ),
+
+                          Text(
+                            '$lifeTotal',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          IconButton(
+                            onPressed: () => onLifeChange(1),
+                            icon: const Icon(Icons.add),
+                            color: Colors.black,
+                            iconSize: 32,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
