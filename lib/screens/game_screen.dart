@@ -52,7 +52,8 @@ class _GameScreenState extends State<GameScreen> {
           case 4:
             return 0;
         }
-
+      case 6:
+        return index >= 1 && index <= 3 ? 2 : 0;
       default:
         return 0;
     }
@@ -77,6 +78,7 @@ class _GameScreenState extends State<GameScreen> {
       widget.game.startingLife,
     );
     //determine orientation
+    /*
     if (widget.game.numPlayers <= 3 || widget.game.numPlayers == 5) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     } else {
@@ -85,16 +87,18 @@ class _GameScreenState extends State<GameScreen> {
         DeviceOrientation.landscapeRight,
       ]);
     }
+    */
 
     testDebug(playerLifeTotals);
   }
 
+  /*
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
-
+*/
   // Begins a damage interaction
   void beginDamage(int attacker, int recipient) {
     setState(() {
@@ -174,6 +178,40 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
+  Widget virtualLandscapeBoard(List<int> topRow, List<int> bottomRow) {
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return RotatedBox(
+            quarterTurns: 1,
+            child: SizedBox(
+              width: constraints.maxHeight,
+              height: constraints.maxWidth,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: topRow
+                          .map((index) => playerSection(index))
+                          .toList(),
+                    ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      children: bottomRow
+                          .map((index) => playerSection(index))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,17 +243,8 @@ class _GameScreenState extends State<GameScreen> {
                   playerSection(2),
                 ],
 
-                if (widget.game.numPlayers == 4) ...[
-                  // Top row: Players 2 and 3
-                  Expanded(
-                    child: Row(children: [playerSection(1), playerSection(2)]),
-                  ),
-
-                  // Bottom row: Players 1 and 4
-                  Expanded(
-                    child: Row(children: [playerSection(0), playerSection(3)]),
-                  ),
-                ],
+                if (widget.game.numPlayers == 4)
+                  virtualLandscapeBoard([1, 2], [0, 3]),
 
                 if (widget.game.numPlayers == 5) ...[
                   // Top row: Players 2 and 3
@@ -232,26 +261,8 @@ class _GameScreenState extends State<GameScreen> {
                   playerSection(4),
                 ],
 
-                if (widget.game.numPlayers == 6) ...[
-                  Expanded(
-                    child: Row(
-                      children: [
-                        playerSection(0),
-                        playerSection(1),
-                        playerSection(2),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        playerSection(3),
-                        playerSection(4),
-                        playerSection(5),
-                      ],
-                    ),
-                  ),
-                ],
+                if (widget.game.numPlayers == 6)
+                  virtualLandscapeBoard([1, 2, 3], [0, 5, 4]),
               ],
             ),
     );
