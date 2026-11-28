@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../game.dart';
 import '../models/damage_event.dart';
@@ -37,12 +38,25 @@ class _GameScreenState extends State<GameScreen> {
         return 0;
 
       case 4:
-        return index == 0 || index == 1 ? 2 : 0;
-      case 5:
-        return index == 0 ? 2 : 0;
+        return index == 1 || index == 2 ? 2 : 0;
+      case 5: //this is gonna be good...
+        switch (index) {
+          case 0:
+            return 1;
+          case 1:
+            return 1;
+          case 2:
+            return 3;
+          case 3:
+            return 3;
+          case 4:
+            return 0;
+        }
+
       default:
         return 0;
     }
+    throw 'player orientation error';
   }
 
   final List<Color> playerColors = [
@@ -62,8 +76,26 @@ class _GameScreenState extends State<GameScreen> {
       widget.game.numPlayers,
       widget.game.startingLife,
     );
+    //determine orientation
+    if (widget.game.numPlayers <= 3 || widget.game.numPlayers == 5) {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    }
 
     testDebug(playerLifeTotals);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
   }
 
   // Begins a damage interaction
@@ -133,6 +165,7 @@ class _GameScreenState extends State<GameScreen> {
       lifeTotal: playerLifeTotals[index],
       playerColor: playerColors[index % playerColors.length],
       quarterTurns: getPlayerRotation(index),
+      allowDragging: widget.game.numPlayers > 1,
 
       onLifeChange: (amount) {
         changeLife(index, amount);
@@ -176,27 +209,30 @@ class _GameScreenState extends State<GameScreen> {
                 ],
 
                 if (widget.game.numPlayers == 4) ...[
+                  // Top row: Players 2 and 3
                   Expanded(
-                    child: Row(children: [playerSection(0), playerSection(1)]),
+                    child: Row(children: [playerSection(1), playerSection(2)]),
                   ),
+
+                  // Bottom row: Players 1 and 4
                   Expanded(
-                    child: Row(children: [playerSection(2), playerSection(3)]),
+                    child: Row(children: [playerSection(0), playerSection(3)]),
                   ),
                 ],
 
                 if (widget.game.numPlayers == 5) ...[
+                  // Top row: Players 2 and 3
                   Expanded(
-                    child: Row(children: [playerSection(0), playerSection(1)]),
+                    child: Row(children: [playerSection(1), playerSection(2)]),
                   ),
+
+                  // Middle row: Players 1 and 4
                   Expanded(
-                    child: Row(
-                      children: [
-                        playerSection(2),
-                        playerSection(3),
-                        playerSection(4),
-                      ],
-                    ),
+                    child: Row(children: [playerSection(0), playerSection(3)]),
                   ),
+
+                  // Bottom row: Player 5
+                  playerSection(4),
                 ],
 
                 if (widget.game.numPlayers == 6) ...[

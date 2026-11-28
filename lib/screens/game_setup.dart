@@ -35,6 +35,7 @@ class _GameSetupState extends State<GameSetup> {
                 const SizedBox(height: 16),
                 SegmentedButton<int>(
                   segments: const [
+                    ButtonSegment(value: 1, label: Text('1')),
                     ButtonSegment(value: 2, label: Text('2')),
                     ButtonSegment(value: 3, label: Text('3')),
                     ButtonSegment(value: 4, label: Text('4')),
